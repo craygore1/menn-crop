@@ -7,13 +7,13 @@ from sklearn.model_selection import KFold
 from MENN import MENN
     
 class NN(nn.Module):
-    def __init__(self, input_dim, hidden_dim):
+    def __init__(self, input_dim):
         super(NN, self).__init__()
         # Standard Feed-Forward Neural Net
         self.nn_model = nn.Sequential(
-            nn.Linear(input_dim, hidden_dim),
+            nn.Linear(input_dim, 10),
             nn.ReLU(),
-            nn.Linear(hidden_dim, 13) 
+            nn.Linear(10, 13) 
         )
     
     def forward(self, X):
@@ -79,7 +79,7 @@ def cross_validate(X, y, subject_ids, day_ids, num_layers = 1, hidden_dim=10, k=
                              num_subjects=num_subjects, 
                              num_days=num_days)
         
-        nn_model = NN(input_dim=X_train.shape[1], hidden_dim = hidden_dim)
+        nn_model = NN(input_dim=X_train.shape[1])
         
         menn_criterion = nn.MSELoss()
         nn_criterion = nn.MSELoss()
@@ -129,7 +129,7 @@ def cross_validate(X, y, subject_ids, day_ids, num_layers = 1, hidden_dim=10, k=
     }
     return menn_mse, nn_mse, results
 
-menn_mse, nn_mse, results = cross_validate(X, y, subject_ids, day_ids, num_layers=1, hidden_dim=10,
-                                               k=10, epochs=200, lr=0.0601, weight_decay=0.0057)
+menn_mse, nn_mse, results = cross_validate(X, y, subject_ids, day_ids, num_layers=1, hidden_dim=12,
+                                               k=10, epochs=200, lr=0.0665, weight_decay=0.0081)
 
 print(results)
