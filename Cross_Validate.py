@@ -50,7 +50,7 @@ day_ids = StdTbl['Day_Id'].values
 
 
 
-def cross_validate(X, y, subject_ids, day_ids, num_layers = 1, hidden_dim=10, k=5, epochs=100, lr=0.01, weight_decay = 1e-2):
+def cross_validate(X, y, subject_ids, day_ids, num_layers=1, hidden_dim=10, k=5, epochs=100, lr=0.01, weight_decay=1e-2, dropout=0.1):
     kfolds = KFold(n_splits=k, shuffle=True, random_state=3)
     menn_mse, nn_mse = [],[]
     
@@ -77,7 +77,8 @@ def cross_validate(X, y, subject_ids, day_ids, num_layers = 1, hidden_dim=10, k=
                              num_layers=num_layers, 
                              hidden_dim=hidden_dim, 
                              num_subjects=num_subjects, 
-                             num_days=num_days)
+                             num_days=num_days,
+                             dropout=dropout)
         
         nn_model = NN(input_dim=X_train.shape[1])
         
@@ -129,7 +130,7 @@ def cross_validate(X, y, subject_ids, day_ids, num_layers = 1, hidden_dim=10, k=
     }
     return menn_mse, nn_mse, results
 
-menn_mse, nn_mse, results = cross_validate(X, y, subject_ids, day_ids, num_layers=1, hidden_dim=12,
-                                               k=10, epochs=200, lr=0.0665, weight_decay=0.0081)
+menn_mse, nn_mse, results = cross_validate(X, y, subject_ids, day_ids, num_layers=1, hidden_dim=25,
+                                               k=10, epochs=200, lr=0.0517, weight_decay=0.0075, dropout=0.0905)
 
 print(results)

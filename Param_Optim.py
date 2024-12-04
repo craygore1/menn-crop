@@ -38,6 +38,7 @@ def objective(trial):
     # Hyperparameter search space
     lr = trial.suggest_loguniform('lr', 1e-4, 1e-1)
     wd = trial.suggest_loguniform('wd', 1e-5, 1e-2)
+    dropout = trial.suggest_loguniform('dropout', 1e-2, 0.9)
     num_layers = trial.suggest_int('num_layers', 1, 5)  # Number of layers in the network
     hidden_dim = trial.suggest_int('hidden_dim', 8, 128)  # Neurons per hidden layer
     
@@ -63,14 +64,15 @@ def objective(trial):
                              num_layers=num_layers, 
                              hidden_dim=hidden_dim, 
                              num_subjects=len(subject_id_mapping), 
-                             num_days=len(day_id_mapping))
+                             num_days=len(day_id_mapping),
+                             dropout=dropout)
         
         
         optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=wd)
         criterion = nn.MSELoss()
         
         
-        epochs = 100
+        epochs = 200
         for epoch in range(epochs):
             model.train()
             optimizer.zero_grad()
@@ -91,6 +93,6 @@ def objective(trial):
 
 
 study = optuna.create_study(direction='minimize')
-study.optimize(objective, n_trials=50)
+study.optimize(objective, n_trials=150)
 
 print(study.best_params)
